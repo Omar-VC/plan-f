@@ -36,27 +36,33 @@ export default function Attendance() {
               {player.nombre} {player.apellido}
             </span>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <button
                 onClick={() => markAttendance(player.id, today, "present")}
-                className={`px-3 py-1 rounded text-white flex items-center gap-2 transition
-                  ${
-                    todayStatus === "present"
-                      ? "bg-green-600"
-                      : "bg-green-400 hover:bg-green-500"
-                  }`}
+                className={`px-3 py-1 rounded-lg font-semibold transition
+    ${
+      todayStatus === "present"
+        ? "bg-green-700 shadow-md scale-105"
+        : "bg-green-600 hover:bg-green-700"
+    }
+  `}
               >
-                Asiste
-                {todayStatus === "present" && <span>✔</span>}
+                Asiste{" "}
+                {todayStatus === "present" && <span className="ml-2">✔️</span>}
               </button>
 
               <button
                 onClick={() => markAttendance(player.id, today, "absent")}
-                className={`px-3 py-1 rounded text-white flex items-center gap-2 transition
-    ${todayStatus === "absent" ? "bg-red-600" : "bg-red-400 hover:bg-red-500"}`}
+                className={`px-3 py-1 rounded-lg font-semibold transition
+    ${
+      todayStatus === "absent"
+        ? "bg-red-700 shadow-md scale-105"
+        : "bg-red-600 hover:bg-red-700"
+    }
+  `}
               >
-                Falta
-                {todayStatus === "absent" && <span>✖</span>}
+                Falta{" "}
+                {todayStatus === "absent" && <span className="ml-2">❌</span>}
               </button>
             </div>
           </div>
