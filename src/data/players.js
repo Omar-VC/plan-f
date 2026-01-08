@@ -5,7 +5,13 @@ export const players = [
     apellido: "Pérez",
     edad: 32,
     posicion: "Forward",
+    attendance: {
+      "2026-01-15": "present",
+      "2026-01-18": "present",
+      "2026-01-22": "absent",
+    },
   },
+
   {
     id: 2,
     nombre: "Lucas",

@@ -1,77 +1,67 @@
-import { useState } from "react";
-import { players } from "../data/players";
+import { usePlayers } from "../context/PlayersContext";
 
 export default function Attendance() {
+  const { players, markAttendance } = usePlayers();
+
   const today = new Date().toISOString().split("T")[0];
 
-  const [selectedDate, setSelectedDate] = useState(today);
-  const [attendanceData, setAttendanceData] = useState({});
+  const presentCount = players.filter(
+    (p) => p.attendance?.[today] === "present"
+  ).length;
 
-  const markAttendance = (playerId, status) => {
-    setAttendanceData((prev) => ({
-      ...prev,
-      [selectedDate]: {
-        ...prev[selectedDate],
-        [playerId]: status,
-      },
-    }));
-  };
-
-  const currentDayAttendance = attendanceData[selectedDate] || {};
+  const absentCount = players.filter(
+    (p) => p.attendance?.[today] === "absent"
+  ).length;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-2xl font-bold mb-4">
-        Asistencias
-      </h1>
-
-      {/* Selector de fecha */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium mb-1">
-          Fecha
-        </label>
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          className="border rounded px-3 py-2"
-        />
+    <div className="p-6">
+      <h1 className="text-xl font-bold mb-4">Asistencia – {today}</h1>
+      <div className="mb-4 bg-white p-4 rounded-xl shadow">
+        <h2 className="text-lg font-semibold">Asistencia de hoy</h2>
+        <p className="text-gray-700">
+          ✔ Presentes: <strong>{presentCount}</strong> &nbsp; | &nbsp; ✖
+          Ausentes: <strong>{absentCount}</strong>
+        </p>
       </div>
 
-      {/* Lista de jugadores */}
-      <div className="space-y-3">
-        {players.map((player) => (
+      {players.map((player) => {
+        const todayStatus = player.attendance?.[today];
+
+        return (
           <div
             key={player.id}
-            className="bg-white p-4 rounded-xl shadow flex justify-between items-center"
+            className="flex justify-between items-center bg-white p-3 mb-2 rounded shadow"
           >
-            <div>
-              <p className="font-semibold">
-                {player.nombre} {player.apellido}
-              </p>
-              <p className="text-sm text-gray-500">
-                {currentDayAttendance[player.id] || "Sin marcar"}
-              </p>
-            </div>
+            <span>
+              {player.nombre} {player.apellido}
+            </span>
 
             <div className="flex gap-2">
               <button
-                onClick={() => markAttendance(player.id, "Asiste")}
-                className="px-3 py-1 rounded bg-green-500 text-white text-sm"
+                onClick={() => markAttendance(player.id, today, "present")}
+                className={`px-3 py-1 rounded text-white flex items-center gap-2 transition
+                  ${
+                    todayStatus === "present"
+                      ? "bg-green-600"
+                      : "bg-green-400 hover:bg-green-500"
+                  }`}
               >
                 Asiste
+                {todayStatus === "present" && <span>✔</span>}
               </button>
 
               <button
-                onClick={() => markAttendance(player.id, "Falta")}
-                className="px-3 py-1 rounded bg-red-500 text-white text-sm"
+                onClick={() => markAttendance(player.id, today, "absent")}
+                className={`px-3 py-1 rounded text-white flex items-center gap-2 transition
+    ${todayStatus === "absent" ? "bg-red-600" : "bg-red-400 hover:bg-red-500"}`}
               >
                 Falta
+                {todayStatus === "absent" && <span>✖</span>}
               </button>
             </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }
