@@ -9,15 +9,13 @@ export default function PlayersList() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-2xl font-bold mb-6">
-        Lista de jugadores
-      </h1>
+      <h1 className="text-2xl font-bold mb-6">Lista de jugadores</h1>
 
       <button
-        onClick={() => setShowForm(true)}
+        onClick={() => setShowForm((prev) => !prev)}
         className="mb-4 bg-green-600 text-white px-4 py-2 rounded"
       >
-        + Agregar jugador
+        {showForm ? "Cerrar formulario" : "+ Agregar jugador"}
       </button>
 
       {showForm && <AddPlayerForm onClose={() => setShowForm(false)} />}
