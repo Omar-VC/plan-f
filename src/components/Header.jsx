@@ -16,19 +16,33 @@ export default function Header() {
     return "Plan F";
   };
 
-  return (
-    <header className="bg-gray-900 text-white px-4 py-3 flex items-center shadow-md">
-      {!isHome && (
-        <button
-          onClick={() => navigate("/", { replace: true })}
-          className="text-xl mr-4"
-          title="Inicio"
-        >
-          🏠
-        </button>
-      )}
+  const today = new Date();
+  const formattedDate = today.toLocaleDateString("es-AR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 
-      <h1 className="text-lg font-bold">{getTitle()}</h1>
+  return (
+    <header className="bg-gray-900 text-white px-4 py-3 shadow-md">
+      <div className="flex items-center">
+        {!isHome && (
+          <button
+            onClick={() => navigate("/", { replace: true })}
+            className="text-xl mr-4"
+            title="Inicio"
+          >
+            🏠
+          </button>
+        )}
+
+        <div>
+          <h1 className="text-lg font-bold leading-tight">{getTitle()}</h1>
+          <p className="text-sm text-gray-300 capitalize">
+            Temporada 2026 · {formattedDate}
+          </p>
+        </div>
+      </div>
     </header>
   );
 }
