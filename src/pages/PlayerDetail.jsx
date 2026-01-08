@@ -1,10 +1,14 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { usePlayers } from "../context/PlayersContext";
 import { getMonthlySummary } from "../utils/attendanceUtils";
+import EditPlayerForm from "../components/EditPlayerForm";
 
 export default function PlayerDetail() {
   const { id } = useParams();
-  const { players } = usePlayers();
+  const navigate = useNavigate();
+  const { players, deletePlayer } = usePlayers();
+  const [showEditForm, setShowEditForm] = useState(false);
 
   const player = players.find(p => p.id === Number(id));
 
@@ -23,7 +27,33 @@ export default function PlayerDetail() {
       <div className="bg-white p-6 rounded-xl shadow mb-6">
         <p><strong>Edad:</strong> {player.edad}</p>
         <p><strong>Posición:</strong> {player.posicion}</p>
+
+        <div className="flex gap-4 mt-4">
+          <button
+            onClick={() => setShowEditForm(true)}
+            className="text-blue-600 text-sm"
+          >
+            Editar
+          </button>
+
+          <button
+            onClick={() => {
+              deletePlayer(player.id);
+              navigate("/plantel-superior/jugadores");
+            }}
+            className="text-red-600 text-sm"
+          >
+            Eliminar
+          </button>
+        </div>
       </div>
+
+      {showEditForm && (
+        <EditPlayerForm
+          player={player}
+          onClose={() => setShowEditForm(false)}
+        />
+      )}
 
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-xl font-semibold mb-4">
