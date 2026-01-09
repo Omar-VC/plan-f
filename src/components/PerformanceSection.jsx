@@ -10,23 +10,29 @@ export default function PerformanceSection({ rendimiento }) {
     );
   }
 
+  // Función segura para convertir valores a número
+  const safeNumber = (val) => {
+    if (val === null || val === "" || val === undefined) return NaN;
+    return Number(val);
+  };
+
   // Función para convertir tiempo "min:seg" a segundos
   const parseTime = (val) => {
     if (typeof val === "string" && val.includes(":")) {
       const [min, sec] = val.split(":").map(Number);
       return min * 60 + sec;
     }
-    return Number(val);
+    return safeNumber(val);
   };
 
   // Calcular media de jugador (forma física global)
   const calcularMedia = (rend) => {
     const metrics = [
       {
-        tipo: "tiempo", // 👈 velocidad ahora se mide como tiempo en segundos
-        ini: Number(rend.velocidad.inicial),
-        act: Number(rend.velocidad.actual),
-        obj: Number(rend.velocidad.objetivo),
+        tipo: "tiempo",
+        ini: safeNumber(rend.velocidad.inicial),
+        act: safeNumber(rend.velocidad.actual),
+        obj: safeNumber(rend.velocidad.objetivo),
       },
       {
         tipo: "tiempo",
@@ -36,32 +42,36 @@ export default function PerformanceSection({ rendimiento }) {
       },
       {
         tipo: "valor",
-        ini: Number(rend.fuerzaInferior.inicial),
-        act: Number(rend.fuerzaInferior.actual),
-        obj: Number(rend.fuerzaInferior.objetivo),
+        ini: safeNumber(rend.fuerzaInferior.inicial),
+        act: safeNumber(rend.fuerzaInferior.actual),
+        obj: safeNumber(rend.fuerzaInferior.objetivo),
       },
       {
         tipo: "valor",
-        ini: Number(rend.fuerzaSuperior.inicial),
-        act: Number(rend.fuerzaSuperior.actual),
-        obj: Number(rend.fuerzaSuperior.objetivo),
+        ini: safeNumber(rend.fuerzaSuperior.inicial),
+        act: safeNumber(rend.fuerzaSuperior.actual),
+        obj: safeNumber(rend.fuerzaSuperior.objetivo),
       },
     ];
 
     const scores = metrics.map((m) => {
-      if ([m.ini, m.act, m.obj].some(v => v === undefined || Number.isNaN(v))) return 0;
+      if ([m.ini, m.act, m.obj].some((v) => Number.isNaN(v))) return NaN;
       if (m.tipo === "tiempo") {
-        if (m.ini === m.obj) return 0; // evita división por cero
+        if (m.ini === m.obj) return NaN;
         return ((m.ini - m.act) / (m.ini - m.obj)) * 100;
       }
       if (m.tipo === "valor") {
-        if (m.obj === m.ini) return 0;
+        if (m.obj === m.ini) return NaN;
         return ((m.act - m.ini) / (m.obj - m.ini)) * 100;
       }
-      return 0;
+      return NaN;
     });
 
-    const media = scores.reduce((a, b) => a + b, 0) / scores.length;
+    const validScores = scores.filter((s) => !Number.isNaN(s));
+    const media = validScores.length
+      ? validScores.reduce((a, b) => a + b, 0) / validScores.length
+      : 0;
+
     return media.toFixed(1);
   };
 
@@ -97,7 +107,7 @@ export default function PerformanceSection({ rendimiento }) {
           inicial={rendimiento.velocidad.inicial}
           actual={rendimiento.velocidad.actual}
           objetivo={rendimiento.velocidad.objetivo}
-          tipo="tiempo" // 👈 ahora menor es mejor
+          tipo="tiempo"
         />
 
         <PerformanceCard
@@ -105,7 +115,7 @@ export default function PerformanceSection({ rendimiento }) {
           inicial={rendimiento.resistencia.inicial}
           actual={rendimiento.resistencia.actual}
           objetivo={rendimiento.resistencia.objetivo}
-          tipo="tiempo" // menor es mejor
+          tipo="tiempo"
         />
 
         <PerformanceCard

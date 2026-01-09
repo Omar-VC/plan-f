@@ -3,6 +3,7 @@ import { usePlayers } from "../context/PlayersContext";
 
 export default function EditPlayerForm({ player, onClose }) {
   const { updatePlayer } = usePlayers();
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     nombre: player.nombre,
@@ -16,9 +17,13 @@ export default function EditPlayerForm({ player, onClose }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updatePlayer(player.id, form);
+    setLoading(true);
+
+    await updatePlayer(player.id, form);
+
+    setLoading(false);
     onClose();
   };
 
@@ -67,9 +72,10 @@ export default function EditPlayerForm({ player, onClose }) {
 
       <button
         type="submit"
+        disabled={loading}
         className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold"
       >
-        Guardar cambios
+        {loading ? "Guardando..." : "Guardar cambios"}
       </button>
     </form>
   );

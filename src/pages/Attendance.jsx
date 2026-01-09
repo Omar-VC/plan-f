@@ -40,12 +40,12 @@ export default function Attendance() {
               <button
                 onClick={() => markAttendance(player.id, today, "present")}
                 className={`px-3 py-1 rounded-lg font-semibold transition
-    ${
-      todayStatus === "present"
-        ? "bg-green-700 shadow-md scale-105"
-        : "bg-green-600 hover:bg-green-700"
-    }
-  `}
+                  ${
+                    todayStatus === "present"
+                      ? "bg-green-700 shadow-md scale-105"
+                      : "bg-green-600 hover:bg-green-700"
+                  }
+                `}
               >
                 Asiste{" "}
                 {todayStatus === "present" && <span className="ml-2">✔️</span>}
@@ -54,17 +54,22 @@ export default function Attendance() {
               <button
                 onClick={() => markAttendance(player.id, today, "absent")}
                 className={`px-3 py-1 rounded-lg font-semibold transition
-    ${
-      todayStatus === "absent"
-        ? "bg-red-700 shadow-md scale-105"
-        : "bg-red-600 hover:bg-red-700"
-    }
-  `}
+                  ${
+                    todayStatus === "absent"
+                      ? "bg-red-700 shadow-md scale-105"
+                      : "bg-red-600 hover:bg-red-700"
+                  }
+                `}
               >
                 Falta{" "}
                 {todayStatus === "absent" && <span className="ml-2">❌</span>}
               </button>
             </div>
+
+            {/* Fallback visual */}
+            {!todayStatus && (
+              <span className="ml-4 text-gray-400 text-sm">Sin marcar</span>
+            )}
           </div>
         );
       })}

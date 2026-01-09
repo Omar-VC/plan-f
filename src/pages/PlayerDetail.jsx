@@ -13,7 +13,8 @@ export default function PlayerDetail() {
   const [showEditForm, setShowEditForm] = useState(false);
   const [showPerformanceForm, setShowPerformanceForm] = useState(false);
 
-  const player = players.find((p) => p.id === Number(id));
+  const player = players.find((p) => p.id === id);
+
 
   if (!player) {
     return <p className="p-6">Jugador no encontrado</p>;
