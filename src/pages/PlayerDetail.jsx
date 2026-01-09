@@ -4,14 +4,14 @@ import { usePlayers } from "../context/PlayersContext";
 import { getMonthlySummary } from "../utils/attendanceUtils";
 import EditPlayerForm from "../components/EditPlayerForm";
 import PerformanceSection from "../components/PerformanceSection";
-import EditPerformanceForm from "../components/EditPerformanceForm"; // 👈 nuevo import
+import EditPerformanceForm from "../components/EditPerformanceForm";
 
 export default function PlayerDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { players, deletePlayer } = usePlayers();
   const [showEditForm, setShowEditForm] = useState(false);
-  const [showPerformanceForm, setShowPerformanceForm] = useState(false); // 👈 nuevo estado
+  const [showPerformanceForm, setShowPerformanceForm] = useState(false);
 
   const player = players.find((p) => p.id === Number(id));
 
@@ -29,6 +29,13 @@ export default function PlayerDetail() {
 
       {/* Datos generales */}
       <div className="bg-white p-6 rounded-xl shadow mb-6">
+        {/* 👇 Foto del jugador */}
+        <img
+          src={`/players/${player.foto || "placeholder.png"}`}
+          alt={`${player.nombre} ${player.apellido}`}
+          className="w-32 h-32 object-cover rounded-full border mb-4"
+        />
+
         <p>
           <strong>Edad:</strong> {player.edad}
         </p>
@@ -102,7 +109,6 @@ export default function PlayerDetail() {
         <EditPerformanceForm
           player={player}
           onSave={(updatedData) => {
-            // ⚠️ Por ahora actualizamos directamente el objeto mock
             player.rendimiento = updatedData;
             setShowPerformanceForm(false);
           }}

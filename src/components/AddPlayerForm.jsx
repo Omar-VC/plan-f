@@ -10,6 +10,7 @@ export default function AddPlayerForm({ onClose }) {
     edad: "",
     posicion: "Forward",
     lesionActual: "",
+    foto: "", // 👈 nuevo campo
   });
 
   const handleChange = (e) => {
@@ -18,7 +19,18 @@ export default function AddPlayerForm({ onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addPlayer(form);
+
+    // 👇 al crear el jugador, inicializamos rendimiento con la estructura completa
+    addPlayer({
+      ...form,
+      rendimiento: {
+        velocidad: { inicial: 0, actual: 0, objetivo: 0 },
+        resistencia: { inicial: "0:00", actual: "0:00", objetivo: "0:00" }, // formato min:seg
+        fuerzaInferior: { inicial: 0, actual: 0, objetivo: 0 },
+        fuerzaSuperior: { inicial: 0, actual: 0, objetivo: 0 },
+      },
+    });
+
     onClose();
   };
 
@@ -60,6 +72,14 @@ export default function AddPlayerForm({ onClose }) {
       <input
         name="lesionActual"
         placeholder="Lesión actual (opcional)"
+        onChange={handleChange}
+        className="w-full p-2 border rounded"
+      />
+
+      {/* 👇 nuevo input para la foto */}
+      <input
+        name="foto"
+        placeholder="Nombre del archivo de la foto (ej: juan.png)"
         onChange={handleChange}
         className="w-full p-2 border rounded"
       />
