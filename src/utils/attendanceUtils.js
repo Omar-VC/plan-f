@@ -6,11 +6,11 @@ export function getYearMonth(dateString) {
   return { year, month };
 }
 
-// Agrupa asistencias por año y mes
-export function groupAttendanceByMonth(attendance = {}) {
+// Agrupa asistencias por año y mes a partir de un array
+export function groupAttendanceByMonth(attendanceHistory = []) {
   const grouped = {};
 
-  Object.entries(attendance).forEach(([date, status]) => {
+  attendanceHistory.forEach(({ date, status }) => {
     const { year, month } = getYearMonth(date);
     const key = `${year}-${month}`;
 
@@ -26,32 +26,26 @@ export function groupAttendanceByMonth(attendance = {}) {
 
 // Cuenta asistencias presentes en un mes
 export function countPresent(attendanceList = []) {
-  return attendanceList.filter(a => a.status === "present").length;
+  return attendanceList.filter((a) => a.status === "present").length;
 }
 
 // Calcula porcentaje mensual
-export function calculateMonthlyPercentage(
-  presentCount,
-  totalTrainings = 8
-) {
+export function calculateMonthlyPercentage(presentCount, totalTrainings) {
   if (totalTrainings === 0) return 0;
   return Math.round((presentCount / totalTrainings) * 100);
 }
 
 // Devuelve resumen mensual listo para UI
-export function getMonthlySummary(attendance = {}, totalTrainings = 8) {
-  const grouped = groupAttendanceByMonth(attendance);
+export function getMonthlySummary(attendanceHistory = [], totalTrainings = 8) {
+  const grouped = groupAttendanceByMonth(attendanceHistory);
   const summary = {};
 
   Object.entries(grouped).forEach(([monthKey, records]) => {
     const presentCount = countPresent(records);
     summary[monthKey] = {
       present: presentCount,
-      total: totalTrainings,
-      percentage: calculateMonthlyPercentage(
-        presentCount,
-        totalTrainings
-      )
+      total: records.length, // usamos cantidad real de registros en ese mes
+      percentage: calculateMonthlyPercentage(presentCount, records.length),
     };
   });
 

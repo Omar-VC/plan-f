@@ -27,7 +27,7 @@ export function PlayersProvider({ children }) {
 
   const addPlayer = async (newPlayer) => {
     await addDoc(collection(db, "players"), {
-      attendance: {},
+      attendanceHistory: [],   // ✅ inicializamos con array
       rendimiento: {},
       ...newPlayer,
     });
@@ -43,14 +43,52 @@ export function PlayersProvider({ children }) {
 
   const markAttendance = async (playerId, date, status) => {
     const playerRef = doc(db, "players", playerId);
+    const player = players.find((p) => p.id === playerId);
+    const history = player.attendanceHistory || [];
+
+    const existingIndex = history.findIndex((h) => h.date === date);
+
+    let updatedHistory;
+    if (existingIndex >= 0) {
+      updatedHistory = [...history];
+      updatedHistory[existingIndex].status = status;
+    } else {
+      updatedHistory = [...history, { date, status }];
+    }
+
     await updateDoc(playerRef, {
-      [`attendance.${date}`]: status,
+      attendanceHistory: updatedHistory,
     });
+  };
+
+  // ✅ limpiar una fecha puntual
+  const clearAttendanceByDate = async (playerId, date) => {
+    const playerRef = doc(db, "players", playerId);
+    const player = players.find((p) => p.id === playerId);
+    const history = player.attendanceHistory || [];
+
+    const updatedHistory = history.filter((h) => h.date !== date);
+
+    await updateDoc(playerRef, { attendanceHistory: updatedHistory });
+  };
+
+  // ✅ limpiar todo el historial
+  const clearAllAttendance = async (playerId) => {
+    const playerRef = doc(db, "players", playerId);
+    await updateDoc(playerRef, { attendanceHistory: [] });
   };
 
   return (
     <PlayersContext.Provider
-      value={{ players, addPlayer, markAttendance, deletePlayer, updatePlayer }}
+      value={{
+        players,
+        addPlayer,
+        markAttendance,
+        clearAttendanceByDate,
+        clearAllAttendance,
+        deletePlayer,
+        updatePlayer,
+      }}
     >
       {children}
     </PlayersContext.Provider>

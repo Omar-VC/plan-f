@@ -9,18 +9,22 @@ import EditPerformanceForm from "../components/EditPerformanceForm";
 export default function PlayerDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { players, deletePlayer } = usePlayers();
+  const {
+    players,
+    deletePlayer,
+    clearAttendanceByDate,
+    clearAllAttendance,
+  } = usePlayers();
   const [showEditForm, setShowEditForm] = useState(false);
   const [showPerformanceForm, setShowPerformanceForm] = useState(false);
 
   const player = players.find((p) => p.id === id);
 
-
   if (!player) {
     return <p className="p-6">Jugador no encontrado</p>;
   }
 
-  const monthlySummary = getMonthlySummary(player.attendance);
+  const monthlySummary = getMonthlySummary(player.attendanceHistory || []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -30,7 +34,6 @@ export default function PlayerDetail() {
 
       {/* Datos generales */}
       <div className="bg-white p-6 rounded-xl shadow mb-6">
-        {/* 👇 Foto del jugador */}
         <img
           src={`/players/${player.foto || "placeholder.png"}`}
           alt={`${player.nombre} ${player.apellido}`}
@@ -87,6 +90,43 @@ export default function PlayerDetail() {
               Presentes: {data.present} / {data.total}
             </p>
             <p className="font-semibold">Asistencia: {data.percentage}%</p>
+          </div>
+        ))}
+
+        {/* Botón para limpiar todo el historial */}
+        {player.attendanceHistory?.length > 0 && (
+          <button
+            onClick={() => clearAllAttendance(player.id)}
+            className="mt-4 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+          >
+            🧹 Limpiar historial completo
+          </button>
+        )}
+      </div>
+
+      {/* Lista de asistencias individuales */}
+      <div className="bg-white p-6 rounded-xl shadow mb-6">
+        <h2 className="text-xl font-semibold mb-4">Registro individual</h2>
+
+        {player.attendanceHistory?.length === 0 && (
+          <p className="text-gray-500">No hay registros individuales.</p>
+        )}
+
+        {player.attendanceHistory?.map((record) => (
+          <div
+            key={record.date}
+            className="flex justify-between items-center border-b py-2"
+          >
+            <span>
+              {record.date} –{" "}
+              {record.status === "present" ? "✔ Asiste" : "❌ Falta"}
+            </span>
+            <button
+              onClick={() => clearAttendanceByDate(player.id, record.date)}
+              className="text-sm text-red-600 hover:underline"
+            >
+              Borrar
+            </button>
           </div>
         ))}
       </div>

@@ -1,23 +1,39 @@
 import { usePlayers } from "../context/PlayersContext";
+import { useState } from "react";
 
 export default function Attendance() {
   const { players, markAttendance } = usePlayers();
-
   const today = new Date().toISOString().split("T")[0];
+  const [selectedDate, setSelectedDate] = useState(today);
 
   const presentCount = players.filter(
-    (p) => p.attendance?.[today] === "present"
+    (p) =>
+      p.attendanceHistory?.some(
+        (h) => h.date === selectedDate && h.status === "present"
+      )
   ).length;
 
   const absentCount = players.filter(
-    (p) => p.attendance?.[today] === "absent"
+    (p) =>
+      p.attendanceHistory?.some(
+        (h) => h.date === selectedDate && h.status === "absent"
+      )
   ).length;
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Asistencia – {today}</h1>
+      <h1 className="text-xl font-bold mb-4">Asistencia – {selectedDate}</h1>
+
+      {/* Selector de fecha */}
+      <input
+        type="date"
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+        className="mb-4 p-2 border rounded"
+      />
+
       <div className="mb-4 bg-white p-4 rounded-xl shadow">
-        <h2 className="text-lg font-semibold">Asistencia de hoy</h2>
+        <h2 className="text-lg font-semibold">Resumen</h2>
         <p className="text-gray-700">
           ✔ Presentes: <strong>{presentCount}</strong> &nbsp; | &nbsp; ✖
           Ausentes: <strong>{absentCount}</strong>
@@ -25,7 +41,9 @@ export default function Attendance() {
       </div>
 
       {players.map((player) => {
-        const todayStatus = player.attendance?.[today];
+        const status = player.attendanceHistory?.find(
+          (h) => h.date === selectedDate
+        )?.status;
 
         return (
           <div
@@ -38,36 +56,37 @@ export default function Attendance() {
 
             <div className="flex gap-2 items-center">
               <button
-                onClick={() => markAttendance(player.id, today, "present")}
+                onClick={() =>
+                  markAttendance(player.id, selectedDate, "present")
+                }
                 className={`px-3 py-1 rounded-lg font-semibold transition
                   ${
-                    todayStatus === "present"
+                    status === "present"
                       ? "bg-green-700 shadow-md scale-105"
                       : "bg-green-600 hover:bg-green-700"
                   }
                 `}
               >
-                Asiste{" "}
-                {todayStatus === "present" && <span className="ml-2">✔️</span>}
+                Asiste {status === "present" && <span className="ml-2">✔️</span>}
               </button>
 
               <button
-                onClick={() => markAttendance(player.id, today, "absent")}
+                onClick={() =>
+                  markAttendance(player.id, selectedDate, "absent")
+                }
                 className={`px-3 py-1 rounded-lg font-semibold transition
                   ${
-                    todayStatus === "absent"
+                    status === "absent"
                       ? "bg-red-700 shadow-md scale-105"
                       : "bg-red-600 hover:bg-red-700"
                   }
                 `}
               >
-                Falta{" "}
-                {todayStatus === "absent" && <span className="ml-2">❌</span>}
+                Falta {status === "absent" && <span className="ml-2">❌</span>}
               </button>
             </div>
 
-            {/* Fallback visual */}
-            {!todayStatus && (
+            {!status && (
               <span className="ml-4 text-gray-400 text-sm">Sin marcar</span>
             )}
           </div>
