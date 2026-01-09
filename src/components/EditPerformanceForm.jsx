@@ -34,28 +34,46 @@ export default function EditPerformanceForm({ player, onSave, onClose }) {
 
         {/* Velocidad */}
         <div>
-          <h3 className="font-medium mb-2">Velocidad (km/h)</h3>
+          <h3 className="font-medium mb-2">Velocidad (tiempo en 30 m)</h3>
+          
           <label className="block text-sm">Inicial</label>
-          <input
-            type="number"
-            value={formData.velocidad.inicial}
-            onChange={(e) => handleChange("velocidad", "inicial", e.target.value)}
-            className="border rounded p-2 w-full"
-          />
+          <div className="flex items-center space-x-2">
+            <input
+              type="number"
+              step="0.01"
+              value={formData.velocidad.inicial}
+              onChange={(e) => handleChange("velocidad", "inicial", e.target.value)}
+              className="border rounded p-2 w-full"
+              placeholder="ej: 4.8"
+            />
+            <span className="text-gray-600">s</span>
+          </div>
+
           <label className="block text-sm mt-2">Actual</label>
-          <input
-            type="number"
-            value={formData.velocidad.actual}
-            onChange={(e) => handleChange("velocidad", "actual", e.target.value)}
-            className="border rounded p-2 w-full"
-          />
+          <div className="flex items-center space-x-2">
+            <input
+              type="number"
+              step="0.01"
+              value={formData.velocidad.actual}
+              onChange={(e) => handleChange("velocidad", "actual", e.target.value)}
+              className="border rounded p-2 w-full"
+              placeholder="ej: 4.5"
+            />
+            <span className="text-gray-600">s</span>
+          </div>
+
           <label className="block text-sm mt-2">Objetivo</label>
-          <input
-            type="number"
-            value={formData.velocidad.objetivo}
-            onChange={(e) => handleChange("velocidad", "objetivo", e.target.value)}
-            className="border rounded p-2 w-full"
-          />
+          <div className="flex items-center space-x-2">
+            <input
+              type="number"
+              step="0.01"
+              value={formData.velocidad.objetivo}
+              onChange={(e) => handleChange("velocidad", "objetivo", e.target.value)}
+              className="border rounded p-2 w-full"
+              placeholder="ej: 4.2"
+            />
+            <span className="text-gray-600">s</span>
+          </div>
         </div>
 
         {/* Resistencia */}

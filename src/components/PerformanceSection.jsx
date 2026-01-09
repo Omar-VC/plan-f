@@ -23,7 +23,7 @@ export default function PerformanceSection({ rendimiento }) {
   const calcularMedia = (rend) => {
     const metrics = [
       {
-        tipo: "valor",
+        tipo: "tiempo", // 👈 velocidad ahora se mide como tiempo en segundos
         ini: Number(rend.velocidad.inicial),
         act: Number(rend.velocidad.actual),
         obj: Number(rend.velocidad.objetivo),
@@ -49,10 +49,16 @@ export default function PerformanceSection({ rendimiento }) {
     ];
 
     const scores = metrics.map((m) => {
+      if ([m.ini, m.act, m.obj].some(v => v === undefined || Number.isNaN(v))) return 0;
       if (m.tipo === "tiempo") {
+        if (m.ini === m.obj) return 0; // evita división por cero
         return ((m.ini - m.act) / (m.ini - m.obj)) * 100;
       }
-      return ((m.act - m.ini) / (m.obj - m.ini)) * 100;
+      if (m.tipo === "valor") {
+        if (m.obj === m.ini) return 0;
+        return ((m.act - m.ini) / (m.obj - m.ini)) * 100;
+      }
+      return 0;
     });
 
     const media = scores.reduce((a, b) => a + b, 0) / scores.length;
@@ -87,11 +93,11 @@ export default function PerformanceSection({ rendimiento }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <PerformanceCard
-          title="Velocidad (km/h)"
+          title="Velocidad (tiempo en 30 m)"
           inicial={rendimiento.velocidad.inicial}
           actual={rendimiento.velocidad.actual}
           objetivo={rendimiento.velocidad.objetivo}
-          tipo="valor"
+          tipo="tiempo" // 👈 ahora menor es mejor
         />
 
         <PerformanceCard
