@@ -10,7 +10,8 @@ export default function AddPlayerForm({ onClose }) {
     edad: "",
     posicion: "Forward",
     lesionActual: "",
-    foto: "", // 👈 nuevo campo
+    foto: "",
+    dni: "", // 👈 nuevo campo
   });
 
   const handleChange = (e) => {
@@ -61,6 +62,15 @@ export default function AddPlayerForm({ onClose }) {
         className="w-full p-2 border rounded"
         required
       />
+      <input
+        name="dni"
+        type="text"
+        placeholder="DNI"
+        onChange={handleChange}
+        className="w-full p-2 border rounded"
+        required
+      />
+
       <select
         name="posicion"
         onChange={handleChange}

@@ -19,6 +19,10 @@ export default function PlayerCard({ player }) {
           <p className="text-gray-500 text-sm">
             {player.posicion} · {player.edad} años
           </p>
+          {/* 👇 nuevo campo DNI */}
+          <p className="text-gray-500 text-sm">
+            DNI: {player.dni || "—"}
+          </p>
         </div>
       </div>
     </Link>

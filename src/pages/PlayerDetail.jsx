@@ -9,12 +9,8 @@ import EditPerformanceForm from "../components/EditPerformanceForm";
 export default function PlayerDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const {
-    players,
-    deletePlayer,
-    clearAttendanceByDate,
-    clearAllAttendance,
-  } = usePlayers();
+  const { players, deletePlayer, clearAttendanceByDate, clearAllAttendance } =
+    usePlayers();
   const [showEditForm, setShowEditForm] = useState(false);
   const [showPerformanceForm, setShowPerformanceForm] = useState(false);
 
@@ -39,14 +35,17 @@ export default function PlayerDetail() {
           alt={`${player.nombre} ${player.apellido}`}
           className="w-32 h-32 object-cover rounded-full border mb-4"
         />
-
         <p>
           <strong>Edad:</strong> {player.edad}
         </p>
         <p>
           <strong>Posición:</strong> {player.posicion}
         </p>
-
+        {/* 👇 nuevo campo DNI */}{" "}
+        <p>
+          {" "}
+          <strong>DNI:</strong> {player.dni || "—"}{" "}
+        </p>
         <div className="flex gap-4 mt-4">
           <button
             onClick={() => setShowEditForm(true)}

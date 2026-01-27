@@ -11,6 +11,8 @@ export default function EditPlayerForm({ player, onClose }) {
     edad: player.edad,
     posicion: player.posicion,
     lesionActual: player.lesionActual || "",
+    dni: player.dni || "", // 👈 nuevo campo
+    foto: player.foto || "", // 👈 nuevo campo
   });
 
   const handleChange = (e) => {
@@ -54,6 +56,15 @@ export default function EditPlayerForm({ player, onClose }) {
         className="w-full p-2 border rounded"
         required
       />
+      <input
+        name="dni"
+        value={form.dni}
+        onChange={handleChange}
+        placeholder="DNI"
+        className="w-full p-2 border rounded"
+        required
+      />
+
       <select
         name="posicion"
         value={form.posicion}
@@ -67,6 +78,13 @@ export default function EditPlayerForm({ player, onClose }) {
         name="lesionActual"
         value={form.lesionActual}
         onChange={handleChange}
+        className="w-full p-2 border rounded"
+      />
+      <input
+        name="foto"
+        value={form.foto}
+        onChange={handleChange}
+        placeholder="Nombre del archivo de la foto (ej: juan.png)"
         className="w-full p-2 border rounded"
       />
 
