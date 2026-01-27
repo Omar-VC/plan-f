@@ -9,7 +9,9 @@ export default function Attendance() {
   const presentCount = players.filter(
     (p) =>
       p.attendanceHistory?.some(
-        (h) => h.date === selectedDate && h.status === "present"
+        (h) =>
+          h.date === selectedDate &&
+          (h.status === "present" || h.status === "late") // tardanza cuenta como presente
       )
   ).length;
 
@@ -17,6 +19,13 @@ export default function Attendance() {
     (p) =>
       p.attendanceHistory?.some(
         (h) => h.date === selectedDate && h.status === "absent"
+      )
+  ).length;
+
+  const lateCount = players.filter(
+    (p) =>
+      p.attendanceHistory?.some(
+        (h) => h.date === selectedDate && h.status === "late"
       )
   ).length;
 
@@ -36,7 +45,8 @@ export default function Attendance() {
         <h2 className="text-lg font-semibold">Resumen</h2>
         <p className="text-gray-700">
           ✔ Presentes: <strong>{presentCount}</strong> &nbsp; | &nbsp; ✖
-          Ausentes: <strong>{absentCount}</strong>
+          Ausentes: <strong>{absentCount}</strong> &nbsp; | &nbsp; ⏱️
+          Tardanzas: <strong>{lateCount}</strong>
         </p>
       </div>
 
@@ -84,6 +94,21 @@ export default function Attendance() {
               >
                 Falta {status === "absent" && <span className="ml-2">❌</span>}
               </button>
+
+              <button
+                onClick={() =>
+                  markAttendance(player.id, selectedDate, "late")
+                }
+                className={`px-3 py-1 rounded-lg font-semibold transition
+                  ${
+                    status === "late"
+                      ? "bg-yellow-600 shadow-md scale-105"
+                      : "bg-yellow-500 hover:bg-yellow-600"
+                  }
+                `}
+              >
+                Tardanza {status === "late" && <span className="ml-2">⏱️</span>}
+              </button>
             </div>
 
             {!status && (
@@ -95,3 +120,4 @@ export default function Attendance() {
     </div>
   );
 }
+

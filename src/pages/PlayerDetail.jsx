@@ -41,10 +41,8 @@ export default function PlayerDetail() {
         <p>
           <strong>Posición:</strong> {player.posicion}
         </p>
-        {/* 👇 nuevo campo DNI */}{" "}
         <p>
-          {" "}
-          <strong>DNI:</strong> {player.dni || "—"}{" "}
+          <strong>DNI:</strong> {player.dni || "—"}
         </p>
         <div className="flex gap-4 mt-4">
           <button
@@ -92,7 +90,6 @@ export default function PlayerDetail() {
           </div>
         ))}
 
-        {/* Botón para limpiar todo el historial */}
         {player.attendanceHistory?.length > 0 && (
           <button
             onClick={() => clearAllAttendance(player.id)}
@@ -118,7 +115,13 @@ export default function PlayerDetail() {
           >
             <span>
               {record.date} –{" "}
-              {record.status === "present" ? "✔ Asiste" : "❌ Falta"}
+              {record.status === "present" && "✔ Asiste"}
+              {record.status === "absent" && "❌ Falta"}
+              {record.status === "late" && (
+                <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                  ⏱️ Asiste (con tardanza)
+                </span>
+              )}
             </span>
             <button
               onClick={() => clearAttendanceByDate(player.id, record.date)}
@@ -144,7 +147,6 @@ export default function PlayerDetail() {
         </div>
       )}
 
-      {/* Formulario de edición de rendimiento */}
       {showPerformanceForm && (
         <EditPerformanceForm
           player={player}

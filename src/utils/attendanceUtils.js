@@ -24,10 +24,15 @@ export function groupAttendanceByMonth(attendanceHistory = []) {
   return grouped;
 }
 
+
 // Cuenta asistencias presentes en un mes
 export function countPresent(attendanceList = []) {
-  return attendanceList.filter((a) => a.status === "present").length;
+  // 👇 ahora tardanza también cuenta como presente
+  return attendanceList.filter(
+    (a) => a.status === "present" || a.status === "late"
+  ).length;
 }
+
 
 // Calcula porcentaje mensual
 export function calculateMonthlyPercentage(presentCount, totalTrainings) {
