@@ -4,8 +4,7 @@ import {
   collection,
   addDoc,
   onSnapshot,
-  query,
-  where,
+  
 } from "firebase/firestore";
 
 const PlanContext = createContext();

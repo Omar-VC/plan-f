@@ -41,7 +41,8 @@ export function calculateMonthlyPercentage(presentCount, totalTrainings) {
 }
 
 // Devuelve resumen mensual listo para UI
-export function getMonthlySummary(attendanceHistory = [], totalTrainings = 8) {
+export function getMonthlySummary(attendanceHistory = []) {
+
   const grouped = groupAttendanceByMonth(attendanceHistory);
   const summary = {};
 
