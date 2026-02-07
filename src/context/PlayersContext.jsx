@@ -1,13 +1,14 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { db } from "../firebase";
 import {
-  collection,
   addDoc,
+  collection,
   deleteDoc,
   doc,
-  updateDoc,
   onSnapshot,
+  updateDoc,
 } from "firebase/firestore";
+import { getDivisionFromCategory } from "../utils/divisions";
 
 const PlayersContext = createContext();
 
@@ -16,19 +17,25 @@ export function PlayersProvider({ children }) {
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "players"), (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
+      const data = snapshot.docs.map((item) => ({
+        id: item.id,
+        ...item.data(),
       }));
       setPlayers(data);
     });
+
     return () => unsub();
   }, []);
 
   const addPlayer = async (newPlayer) => {
+    const categoria = newPlayer.categoria || "plantel-superior";
+    const division = newPlayer.division || getDivisionFromCategory(categoria);
+
     await addDoc(collection(db, "players"), {
-      attendanceHistory: [],   // ✅ inicializamos con array
+      attendanceHistory: [],
       rendimiento: {},
+      categoria,
+      division,
       ...newPlayer,
     });
   };
@@ -38,20 +45,29 @@ export function PlayersProvider({ children }) {
   };
 
   const updatePlayer = async (playerId, updatedData) => {
-    await updateDoc(doc(db, "players", playerId), updatedData);
+    const payload = { ...updatedData };
+
+    if (payload.categoria) {
+      payload.division = getDivisionFromCategory(payload.categoria);
+    }
+
+    await updateDoc(doc(db, "players", playerId), payload);
   };
 
   const markAttendance = async (playerId, date, status) => {
     const playerRef = doc(db, "players", playerId);
     const player = players.find((p) => p.id === playerId);
-    const history = player.attendanceHistory || [];
+    const history = player?.attendanceHistory || [];
 
     const existingIndex = history.findIndex((h) => h.date === date);
 
     let updatedHistory;
     if (existingIndex >= 0) {
       updatedHistory = [...history];
-      updatedHistory[existingIndex].status = status;
+      updatedHistory[existingIndex] = {
+        ...updatedHistory[existingIndex],
+        status,
+      };
     } else {
       updatedHistory = [...history, { date, status }];
     }
@@ -61,18 +77,16 @@ export function PlayersProvider({ children }) {
     });
   };
 
-  // ✅ limpiar una fecha puntual
   const clearAttendanceByDate = async (playerId, date) => {
     const playerRef = doc(db, "players", playerId);
     const player = players.find((p) => p.id === playerId);
-    const history = player.attendanceHistory || [];
+    const history = player?.attendanceHistory || [];
 
     const updatedHistory = history.filter((h) => h.date !== date);
 
     await updateDoc(playerRef, { attendanceHistory: updatedHistory });
   };
 
-  // ✅ limpiar todo el historial
   const clearAllAttendance = async (playerId) => {
     const playerRef = doc(db, "players", playerId);
     await updateDoc(playerRef, { attendanceHistory: [] });

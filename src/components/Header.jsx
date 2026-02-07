@@ -1,18 +1,21 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { getDivisionLabel, isValidDivision } from "../utils/divisions";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { division = "plantel-superior" } = useParams();
 
   const isHome = location.pathname === "/";
+  const currentDivision = isValidDivision(division) ? division : "plantel-superior";
 
   const getTitle = () => {
-    if (location.pathname === "/") return "Plan F";
-    if (location.pathname === "/plantel-superior") return "Plantel Superior";
+    if (isHome) return "Plan F";
+    if (location.pathname === `/${currentDivision}`) return getDivisionLabel(currentDivision);
     if (location.pathname.includes("/asistencias")) return "Asistencias";
     if (location.pathname.includes("/jugadores/")) return "Ficha del Jugador";
     if (location.pathname.includes("/jugadores")) return "Lista de Jugadores";
-
+    if (location.pathname.includes("/plan")) return "Plan de Entrenamiento";
     return "Plan F";
   };
 
@@ -39,6 +42,7 @@ export default function Header() {
         <div>
           <h1 className="text-lg font-bold leading-tight">{getTitle()}</h1>
           <p className="text-sm text-gray-300 capitalize">
+            {isHome ? "" : `${getDivisionLabel(currentDivision)} · `}
             Temporada 2026 · {formattedDate}
           </p>
         </div>

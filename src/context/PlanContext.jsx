@@ -1,13 +1,11 @@
-// context/PlanContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
 import { db } from "../firebase";
 import {
   collection,
   addDoc,
-  doc,
-  updateDoc,
-  deleteDoc,
   onSnapshot,
+  query,
+  where,
 } from "firebase/firestore";
 
 const PlanContext = createContext();
@@ -23,33 +21,16 @@ export function PlanProvider({ children }) {
       }));
       setPlans(data);
     });
+
     return () => unsub();
   }, []);
 
-  // Crear un nuevo plan (ej: temporada)
   const addPlan = async (newPlan) => {
-    await addDoc(collection(db, "plans"), {
-      seasonYear: new Date().getFullYear(),
-      objectives: { annual: "", monthly: [] },
-      weeklyPlans: [],
-      ...newPlan,
-    });
-  };
-
-  // Actualizar un plan existente
-  const updatePlan = async (planId, updatedData) => {
-    await updateDoc(doc(db, "plans", planId), updatedData);
-  };
-
-  // Eliminar un plan
-  const deletePlan = async (planId) => {
-    await deleteDoc(doc(db, "plans", planId));
+    await addDoc(collection(db, "plans"), newPlan);
   };
 
   return (
-    <PlanContext.Provider
-      value={{ plans, addPlan, updatePlan, deletePlan }}
-    >
+    <PlanContext.Provider value={{ plans, addPlan }}>
       {children}
     </PlanContext.Provider>
   );
