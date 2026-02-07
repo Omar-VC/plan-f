@@ -1,13 +1,15 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getDivisionLabel, isValidDivision } from "../utils/divisions";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { division = "plantel-superior" } = useParams();
 
   const isHome = location.pathname === "/";
-  const currentDivision = isValidDivision(division) ? division : "plantel-superior";
+  const firstSegment = location.pathname.split("/")[1];
+  const currentDivision = isValidDivision(firstSegment)
+    ? firstSegment
+    : "plantel-superior";
 
   const getTitle = () => {
     if (isHome) return "Plan F";
