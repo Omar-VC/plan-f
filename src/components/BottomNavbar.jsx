@@ -1,16 +1,22 @@
-import { ClipboardDocumentCheckIcon, UserGroupIcon, CalendarIcon } from "@heroicons/react/24/outline";
-import { Link, useLocation, useParams } from "react-router-dom";
+import {
+  ClipboardDocumentCheckIcon,
+  UserGroupIcon,
+  CalendarIcon,
+} from "@heroicons/react/24/outline";
+import { Link, useLocation } from "react-router-dom";
 import { isValidDivision } from "../utils/divisions";
 
 export default function BottomNavbar() {
   const location = useLocation();
-  const { division = "plantel-superior" } = useParams();
 
   if (location.pathname === "/") {
     return null;
   }
 
-  const currentDivision = isValidDivision(division) ? division : "plantel-superior";
+  const firstSegment = location.pathname.split("/")[1];
+  const currentDivision = isValidDivision(firstSegment)
+    ? firstSegment
+    : "plantel-superior";
 
   const items = [
     {
@@ -18,8 +24,16 @@ export default function BottomNavbar() {
       label: "Asistencias",
       icon: ClipboardDocumentCheckIcon,
     },
-    { path: `/${currentDivision}/jugadores`, label: "Jugadores", icon: UserGroupIcon },
-    { path: `/${currentDivision}/plan`, label: "Plan", icon: CalendarIcon },
+    {
+      path: `/${currentDivision}/jugadores`,
+      label: "Jugadores",
+      icon: UserGroupIcon,
+    },
+    {
+      path: `/${currentDivision}/plan`,
+      label: "Plan",
+      icon: CalendarIcon,
+    },
   ];
 
   return (

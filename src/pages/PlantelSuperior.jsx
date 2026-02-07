@@ -16,7 +16,7 @@ export default function PlantelSuperior() {
         <Link to={`/${division}/jugadores`}>
           <div className="bg-white p-6 rounded-xl shadow cursor-pointer hover:shadow-lg transition flex items-start space-x-3">
             <div className="h-12 w-12 flex items-center justify-center bg-blue-100 rounded-full">
-              <img src="/rugby.png" alt="rugby icon" className="h-8 w-8" />
+              <img src="/rugby-player.png" alt="rugby icon" className="h-8 w-8" />
             </div>
             <div>
               <h2 className="text-xl font-semibold">Lista de jugadores</h2>
@@ -40,7 +40,8 @@ export default function PlantelSuperior() {
         <Link to={`/${division}/plan`}>
           <div className="bg-white p-6 rounded-xl shadow cursor-pointer hover:shadow-lg transition flex items-start space-x-3 md:col-span-2">
             <div className="h-12 w-12 flex items-center justify-center bg-purple-100 rounded-full">
-              <img src="/logo512.png" alt="plan icon" className="h-8 w-8" />
+              <img src="/rugby.png" alt="plan icon" className="h-8 w-8" />
+
             </div>
             <div>
               <h2 className="text-xl font-semibold">Plan de entrenamiento</h2>
